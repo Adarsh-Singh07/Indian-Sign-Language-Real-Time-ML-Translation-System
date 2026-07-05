@@ -727,20 +727,22 @@ class Application:
     def _update_buffer(self, ch1):
         """Append characters, handle space/backspace/next, update suggestions."""
 
+        # ── Backspace gesture → delete last letter immediately on detection ─────
+        if ch1 == "Backspace" and self.prev_char != "Backspace":
+            self.sentence = self.sentence[:-1]
+
         # ── "next" gesture → commit the buffered character ─────────────────────
-        if ch1 == "next" and self.prev_char != "next":
+        elif ch1 == "next" and self.prev_char != "next":
             prev_idx = (self.count - 2) % 10
             c = self.ten_prev[prev_idx]
             if isinstance(c, str):
-                if c != "next":
-                    if c == "Backspace":
-                        self.sentence = self.sentence[:-1]
-                    elif len(c) == 1:
+                if c != "next" and c != "Backspace":
+                    if len(c) == 1:
                         self.sentence += c
             else:
-                # If c was not a string (e.g. group index int), check the current character instead
+                # If c was not a string, check the current character instead
                 c2 = self.ten_prev[self.count % 10]
-                if isinstance(c2, str) and c2 != "Backspace" and len(c2) == 1:
+                if isinstance(c2, str) and c2 != "Backspace" and c2 != "next" and len(c2) == 1:
                     self.sentence += c2
 
         # ── Space gesture → add space + auto-speak completed word ──────────────
