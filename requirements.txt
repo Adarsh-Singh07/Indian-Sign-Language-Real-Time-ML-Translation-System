@@ -1,0 +1,29 @@
+# Indian Sign Language — Real-Time ML Translation System
+# Requirements File
+# Install all dependencies with: pip install -r requirements.txt
+#
+# Tested on Python 3.9.x (Windows 10/11)
+# -------------------------------------------------------------------
+
+# Core ML / Deep Learning
+tensorflow==2.10.0
+keras==2.10.0
+
+# Computer Vision
+opencv-python==4.7.0.72
+cvzone==1.5.6
+
+# Hand Landmark Detection (pulled in by cvzone, pinned for stability)
+mediapipe==0.9.1.0
+
+# GUI
+Pillow==9.5.0
+
+# Text-to-Speech
+pyttsx3==2.90
+
+# Spell Check / Word Suggestions
+pyenchant==3.2.2
+
+# Math / Numerics (usually already installed)
+numpy==1.23.5

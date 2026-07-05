@@ -1,0 +1,76 @@
+# ========================
+# Python
+# ========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.pyo
+
+# ========================
+# Virtual Environments
+# ========================
+venv/
+.venv/
+env/
+ENV/
+.env
+
+# ========================
+# IDE / Editor Files
+# ========================
+.idea/
+.vscode/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# ========================
+# Jupyter Notebooks (checkpoints)
+# ========================
+.ipynb_checkpoints/
+
+# ========================
+# OS Files
+# ========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ========================
+# ML Model Weights (large binaries — use Git LFS if needed)
+# ========================
+# Uncomment below if you want to exclude the model:
+# *.h5
+# *.pb
+# *.tflite
+
+# ========================
+# Dataset / Training Data (keep AtoZ_3.1 tracked)
+# ========================
+# Add paths here if you want to exclude large datasets
+# e.g.: data/raw/
+
+# ========================
+# Logs & Temp
+# ========================
+*.log
+*.tmp
+*.bak
+logs/
+
+# ========================
+# Academic / Report Files (not needed in deployment)
+# ========================
+*.pptx
+*.docx
+*.pdf
+G18_Poster.pdf
+VIVA_PRESENTATION*
+From_table_of_content*
