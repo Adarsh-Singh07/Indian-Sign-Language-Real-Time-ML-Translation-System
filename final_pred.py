@@ -723,14 +723,16 @@ class Application:
         if ch1 == "next" and self.prev_char != "next":
             prev_idx = (self.count - 2) % 10
             c = self.ten_prev[prev_idx]
-            if c != "next":
-                if c == "Backspace":
-                    self.sentence = self.sentence[:-1]
-                elif c:
-                    self.sentence += c
+            if isinstance(c, str):
+                if c != "next":
+                    if c == "Backspace":
+                        self.sentence = self.sentence[:-1]
+                    elif len(c) == 1:
+                        self.sentence += c
             else:
+                # If c was not a string (e.g. group index int), check the current character instead
                 c2 = self.ten_prev[self.count % 10]
-                if c2 and c2 != "Backspace":
+                if isinstance(c2, str) and c2 != "Backspace" and len(c2) == 1:
                     self.sentence += c2
 
         # ── Space gesture → add space + auto-speak completed word ──────────────
