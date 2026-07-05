@@ -676,9 +676,10 @@ class Application:
         # Palm
         for a,b in [(5,9),(9,13),(13,17),(0,5),(0,17)]:
             cv2.line(white,(p[a][0]+ox,p[a][1]+oy),(p[b][0]+ox,p[b][1]+oy),(0,255,0),3)
-        # Landmark dots
+        # Landmark dots - Must match training dataset format exactly:
+        # BGR color (0, 0, 255) (Red), radius 2, thickness 1
         for i in range(21):
-            cv2.circle(white,(p[i][0]+ox,p[i][1]+oy),3,(108,99,255),-1)
+            cv2.circle(white, (p[i][0]+ox, p[i][1]+oy), 2, (0, 0, 255), 1)
 
     def _render_camera(self, frame):
         """Resize BGR frame → display on camera canvas."""
