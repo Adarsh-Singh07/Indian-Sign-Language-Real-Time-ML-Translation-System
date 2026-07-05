@@ -8,8 +8,14 @@
 ╚══════════════════════════════════════════════════════════════════╝
 """
 
-# ─── Standard library ─────────────────────────────────────────────────────────
+# Suppress TensorFlow, Keras, and MediaPipe log noise before imports
 import os
+import logging
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+logging.getLogger('tensorflow').setLevel(logging.ERROR)
+
+# ─── Standard library ─────────────────────────────────────────────────────────
 import math
 import threading
 import queue
@@ -22,6 +28,7 @@ import cv2
 import numpy as np
 import pyttsx3
 import enchant
+import tensorflow as tf
 from keras.models import load_model
 from cvzone.HandTrackingModule import HandDetector
 import customtkinter as ctk
