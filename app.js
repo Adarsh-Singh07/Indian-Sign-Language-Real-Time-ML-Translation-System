@@ -706,6 +706,11 @@ function onHandResults(results) {
         
         const landmarks = results.multiHandLandmarks[0];
         
+        // Mirror horizontally to match mirrored video feed and Python training inputs
+        for (let i = 0; i < 21; i++) {
+            landmarks[i].x = 1.0 - landmarks[i].x;
+        }
+        
         // Calculate Bounding Box of the hand in pixels
         let xmin = cameraCanvas.width;
         let xmax = 0;
