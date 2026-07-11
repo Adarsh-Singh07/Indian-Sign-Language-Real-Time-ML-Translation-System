@@ -1,163 +1,56 @@
-# 🤟 Indian Sign Language — Real-Time ML Translation System
+# 🤟 Indian Sign Language — Real-Time Web Translation System
 
-> **Real-time Indian Sign Language (ISL) recognition** using a CNN trained on hand-landmark skeletons, with live text output and Text-to-Speech (TTS) feedback.
+> **Real-time Indian Sign Language (ISL) recognition** running entirely in the browser using a CNN model and MediaPipe hand tracking, with live text output and Text-to-Speech (TTS) feedback.
 
-Built with **Python · TensorFlow · OpenCV · MediaPipe · pyttsx3**
+This is the Web Version of the project. The original Python desktop codebase is archived on the `python` branch of this repository.
 
 ---
 
 ## 🎯 What It Does
 
-1. **Detects your hand** live from webcam using MediaPipe landmark detection
-2. **Draws the hand skeleton** on a white canvas (making it lighting/background invariant)
-3. **Classifies the gesture** using a trained 8-group CNN model achieving **97% accuracy**
-4. **Builds words and sentences** from detected characters with spell-check suggestions
-5. **Speaks the sentence aloud** via Text-to-Speech (pyttsx3)
+1. **Detects your hand** live from webcam in the browser using MediaPipe and WebAssembly.
+2. **Draws the hand skeleton** on a white 400x400 canvas (making it lighting/background invariant).
+3. **Classifies the gesture** using the converted TensorFlow.js 8-group CNN model.
+4. **Applies geometric rules** directly in JavaScript to resolve visually similar letters within groups.
+5. **Builds words and sentences** from detected characters with dynamic autocomplete/spell-check suggestions.
+6. **Speaks the sentence aloud** via the browser's native Web Speech API (speechSynthesis).
 
 ---
 
-## ✨ Features
+## ✨ Web Features
 
-| Feature | Details |
-|---------|---------|
-| Real-time detection | < 30ms inference per frame |
-| Alphabet coverage | A–Z (all 26 ISL fingerspelling gestures) |
-| Background invariant | Works in any lighting using skeleton rendering |
-| Word suggestions | pyenchant spell-check with 4 live suggestions |
-| Text-to-Speech | pyttsx3 TTS, click "Speak" button or auto |
-| Gesture commands | Space · Backspace · Next-character gestures |
+*   **Zero Lag & High Frame Rate**: Tracking runs client-side in WebAssembly using GPU acceleration.
+*   **Fully Offline**: Runs directly in the browser without sending your webcam feed to any external server.
+*   **Dynamic Spell-Check**: Uses the Datamuse API to suggest words based on the character buffer.
+*   **Text-to-Speech**: Browser-native TTS sounds natural and works without third-party API keys.
+*   **Responsive Apple-Style Dark Theme**: Sleek glassmorphic layout that scales beautifully.
 
 ---
 
-## 🚀 Getting Started
+## 🚀 How to Run Locally
 
-### Prerequisites
-- Python 3.9.x
-- Webcam / built-in camera
+Since the app loads the TensorFlow.js model dynamically using `fetch()`, it must be served from a local web server (to bypass browser CORS policies):
 
-### Installation
-
-```bash
-# 1. Clone the repo
-git clone https://github.com/adarsh-singh07/Indian-Sign-Language-Real-Time-ML-Translation-System.git
-cd Indian-Sign-Language-Real-Time-ML-Translation-System
-
-# 2. Create a virtual environment (recommended)
-python -m venv venv
-venv\Scripts\activate        # Windows
-# source venv/bin/activate   # Linux/Mac
-
-# 3. Install dependencies
-pip install -r requirements.txt
-```
-
-### Run the App
-
-```bash
-# Main application (Tkinter GUI + TTS)
-python final_pred.py
-
-# CLI version (OpenCV window, no GUI)
-python prediction_wo_gui.py
-```
+1. Clone the repository and switch to the `main` branch.
+2. Run a local server from the root directory:
+   * **Python**: `python -m http.server 8000`
+   * **NodeJS**: `npx serve` or `npx live-server`
+3. Open `http://localhost:8000` in your web browser.
 
 ---
 
-## 🧠 How the Model Works
+## 🧠 Model & Architecture
 
 The system uses a **two-stage pipeline**:
+1. **CNN Group Predictor**: Classifies the hand skeleton into one of 8 gesture groups.
+2. **Geometric Heuristics**: Evaluates exact joint angles and distances to determine the target letter within that group.
 
-```
-Webcam Frame
-    ↓
-MediaPipe Hand Detection (cvzone wrapper)
-    ↓
-Crop hand ROI → Draw 21 landmarks on white 400×400 canvas
-    ↓
-CNN Model (8-group classifier)    ←── cnn8grps_rad1_model.h5
-    ↓
-Geometric landmark rules → Final letter classification
-    ↓
-Text buffer → Word suggestions → TTS
-```
-
-### Why 8 Groups?
-Direct 26-class classification gave poor accuracy on visually similar letters. We grouped similar gestures:
-
-| Group | Letters |
-|-------|---------|
-| 0 | A, E, M, N, S, T |
-| 1 | B, D, F, I, K, R, U, V, W |
-| 2 | C, O |
-| 3 | G, H |
-| 4 | L |
-| 5 | P, Q, Z |
-| 6 | X |
-| 7 | Y, J |
-
-The CNN classifies the group, then geometric rules on hand landmarks resolve the exact letter within the group.
-
----
-
-## 📁 Project Structure
-
-```
-├── final_pred.py              # Main GUI application (run this)
-├── prediction_wo_gui.py       # CLI/headless version
-├── data_collection_binary.py  # Dataset collection utility
-├── data_collection_final.py   # Dataset collection v2
-├── cnn8grps_rad1_model.h5     # Trained CNN model weights
-├── white.jpg                  # White canvas template for skeleton rendering
-├── AtoZ_3.1/                  # Training image dataset (A–Z folders, 180 imgs each)
-├── requirements.txt           # Python dependencies
-└── README.md                  # This file
-```
-
----
-
-## 📊 Results
-
-| Metric | Value |
-|--------|-------|
-| CNN model accuracy | **97%** (any background/lighting) |
-| Best case (clean BG) | **99%** |
-| Training images | 180 skeleton images per letter (A–Z) |
-| Input resolution | 400 × 400 px (grayscale skeleton) |
-
----
-
-## 🛠️ Tech Stack
-
-- **Python 3.9**
-- **TensorFlow / Keras** — CNN model inference
-- **OpenCV** — video capture, image processing
-- **MediaPipe / cvzone** — real-time hand landmark detection
-- **pyttsx3** — offline Text-to-Speech
-- **pyenchant** — spell-check & word suggestions
-- **Tkinter + Pillow** — GUI
-
----
-
-## 🎮 Gesture Controls
-
-| Gesture | Action |
-|---------|--------|
-| Any ISL letter | Detected and displayed |
-| Open-palm sideways | **Space** |
-| All fingers extended + thumb tucked | **Next character** (confirm) |
-| Thumbs up / fist with thumb up | **Backspace** |
-| Click "Speak" button | **TTS reads the sentence** |
-| Click "Clear" button | **Clear sentence** |
-| Click word suggestion buttons | **Auto-complete word** |
-
----
-
-## 👨‍💻 Author
-
-**Adarsh Singh** — adarsh2001gop@gmail.com
-
----
-
-## 📄 License
-
-This project is open source under the [MIT License](LICENSE).
+### The 8 Gesture Groups
+*   **Group 0**: A, E, M, N, S, T
+*   **Group 1**: B, D, F, I, K, R, U, V, W
+*   **Group 2**: C, O
+*   **Group 3**: G, H
+*   **Group 4**: L
+*   **Group 5**: P, Q, Z
+*   **Group 6**: X
+*   **Group 7**: J, Y
