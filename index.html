@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Sign Language Translator</title>
+    
+    <!-- Google Fonts: Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- MediaPipe CDNs -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    
+    <!-- TensorFlow.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"></script>
+    
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Glassmorphic Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <span class="logo">🤟</span>
+                <h1>Indian Sign Language <span class="subtitle">Real-Time ML Translator</span></h1>
+            </div>
+            <div class="header-right">
+                <div class="status-indicator">
+                    <span class="dot pulse-teal"></span>
+                    <span class="status-text">LIVE</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Body -->
+        <main class="app-body">
+            <!-- Left Column: Webcam & Skeleton -->
+            <section class="feed-column">
+                <div class="card feed-card">
+                    <div class="card-header">
+                        <i data-lucide="camera" class="icon-dim"></i>
+                        <h2>Live Camera Feed</h2>
+                    </div>
+                    <div class="canvas-container">
+                        <!-- We use a hidden video element to feed the camera stream into MediaPipe -->
+                        <video id="webcam" autoplay playsinline muted style="display: none;"></video>
+                        <canvas id="camera-canvas" width="640" height="480"></canvas>
+                        
+                        <!-- Loading Overlay -->
+                        <div id="loading-overlay" class="overlay">
+                            <div class="spinner"></div>
+                            <p id="loading-text">Loading MediaPipe Models...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card skeleton-card">
+                    <div class="card-header">
+                        <i data-lucide="activity" class="icon-dim"></i>
+                        <h2>Hand Skeleton (CNN Input)</h2>
+                    </div>
+                    <div class="skeleton-container">
+                        <canvas id="skeleton-canvas" width="400" height="400"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Column: Predictions & Text -->
+            <section class="control-column">
+                <!-- Card 1: Detected Character -->
+                <div class="card char-card">
+                    <div class="card-header">
+                        <i data-lucide="scan-face" class="icon-dim"></i>
+                        <h2>Detected Character</h2>
+                    </div>
+                    <div class="char-display-row">
+                        <div class="char-glyph" id="char-label">—</div>
+                        <div class="conf-section">
+                            <div class="conf-header">
+                                <span class="conf-title">Confidence</span>
+                                <span class="conf-value" id="conf-pct">—</span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" id="conf-bar" style="width: 0%;"></div>
+                            </div>
+                            <div class="gesture-hints">
+                                <span>✋ Space</span>
+                                <span>👍 Next</span>
+                                <span>🤜 Backspace</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Sentence Output -->
+                <div class="card sentence-card">
+                    <div class="card-header">
+                        <i data-lucide="message-square" class="icon-dim"></i>
+                        <h2>Sentence</h2>
+                    </div>
+                    <div class="sentence-display" id="sentence-label">
+                        Start signing to build a sentence...
+                    </div>
+                </div>
+
+                <!-- Card 3: Word Suggestions -->
+                <div class="card suggestions-card">
+                    <div class="card-header">
+                        <i data-lucide="sparkles" class="icon-dim"></i>
+                        <h2>Word Suggestions</h2>
+                    </div>
+                    <div class="suggestions-grid">
+                        <button class="sugg-btn" id="sugg-1" disabled>…</button>
+                        <button class="sugg-btn" id="sugg-2" disabled>…</button>
+                        <button class="sugg-btn" id="sugg-3" disabled>…</button>
+                        <button class="sugg-btn" id="sugg-4" disabled>…</button>
+                    </div>
+                </div>
+
+                <!-- Card 4: Controls -->
+                <div class="controls-row">
+                    <button class="btn btn-primary" id="btn-speak">
+                        <i data-lucide="volume-2"></i>
+                        Speak Sentence
+                    </button>
+                    <button class="btn btn-danger" id="btn-clear">
+                        <i data-lucide="trash-2"></i>
+                        Clear
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer / Status Bar -->
+        <footer class="app-footer-bar">
+            <p class="status-msg" id="status-bar-msg">Ready — initializing camera...</p>
+            <p class="app-version">ISL Web Translator v2.0</p>
+        </footer>
+    </div>
+
+    <!-- Main JavaScript App -->
+    <script src="app.js"></script>
+</body>
+</html>
