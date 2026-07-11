@@ -235,14 +235,10 @@ function drawSkeleton(pts, ox, oy) {
     skelCtx.lineWidth = 3;
     skelCtx.stroke();
 
-    // Draw joints as solid pinkish-red circles
-    // BGR (108, 99, 255) -> RGB (255, 99, 108) -> Hex #ff636c
-    skelCtx.fillStyle = "#ff636c";
-    for (let i = 0; i < 21; i++) {
-        skelCtx.beginPath();
-        skelCtx.arc(pts[i][0] + ox, pts[i][1] + oy, 3, 0, 2 * Math.PI);
-        skelCtx.fill();
-    }
+    // Note: The Keras model cnn8grps_rad1_model.h5 was trained on a dataset (AtoZ_3.1)
+    // containing ONLY green lines and ZERO red joint circles.
+    // Drawing joint circles on the skeleton canvas causes the CNN to predict wrong classes.
+    // Therefore, we do not draw joint circles here.
 }
 
 
